@@ -171,15 +171,20 @@ public class GCMBlockCipher
         return Arrays.clone(macBlock);
     }
 
-    public int getOutputSize(int len)
-    {
-        if (forEncryption)
-        {
-             return len + bufOff + macSize;
-        }
+	public int getOutputSize(int len) {
+		if (forEncryption) {
+			return len + bufOff + macSize;
+		}
 
-        return len + bufOff - macSize;
-    }
+		// handle done:
+		// http://bouncy-castle.1462172.n4.nabble.com/Using-AES-GCM-NoPadding-with-javax-crypto-CipherInputStream-tt4655271.html#none
+		if (len == 0 && bufOff == 0) {
+			return 0;
+		}
+		else {
+			return len + bufOff - macSize;
+		}
+	}
 
     public int getUpdateOutputSize(int len)
     {
